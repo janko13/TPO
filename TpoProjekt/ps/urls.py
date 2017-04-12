@@ -27,6 +27,9 @@ urlpatterns = [
     url(r'^inactive/$', views.inactive_view, name='inactive'),
 
     # link activation
-    url(r'^aktivacija/(?P<pk>[0-9]+)/$', views.aktivacijaLinka, name='aktivacija-linka')
+    url(r'^aktivacija/(?P<pk>[0-9]+)/$', views.aktivacijaLinka, name='aktivacija-linka'),
+
+    # dodajanje delovnega naloga
+    url(r'^dodajDelavniNalog/$', views.DodajDelavniNalog.as_view(), name='dodajDelavniNalog')
 ]
 

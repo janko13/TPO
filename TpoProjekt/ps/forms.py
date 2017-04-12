@@ -210,3 +210,44 @@ class GesloForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['password']
+
+
+#delavni nalog forma
+class DelavniNalogForm(forms.ModelForm):
+    nujnost = (
+        ('o', 'obvezn'),
+        ('n', 'okvirn'),
+    )
+
+    moznostiZaVrstoObiska = (
+        ('po', 'preventivni obisk'),
+        ('ko', 'kurativni obisk'),
+    )
+
+    moznostiZaPodVrstoObiska = (
+        ('on', 'obisk nosečnice'),
+        ('oo', 'obisk otročičnice in novorojenčka'),
+        ('ps', 'preventiva starostnika'),
+        ('ai', 'aplikacija inekcije'),
+        ('ok', 'odvzem krvi'),
+        ('ks', 'kontrola zdravstvenega stanja'),
+    )
+    #dobi od uporabnika
+    zdravnik = forms.ModelChoiceField(queryset=RacunOsebje.objects.all())
+    bolezn = forms.ModelChoiceField(label='Bolezen', queryset=SifrantBolezn.objects.all(), required=False)
+    datumPrvegaObiska = forms.DateField(label='Datum prvega obiska', widget=forms.DateInput(attrs={'type': 'date'}))
+    nujnostObiska = forms.ChoiceField(label='Nujnost obiska', choices=nujnost)
+    steviloObiskov = forms.IntegerField(label='Število obiskov')
+    vrstaObiska = forms.ChoiceField(label='Vrsta obiska', choices=moznostiZaVrstoObiska)
+    podVrstaObiska = forms.ChoiceField(label='Pod vrsta obiska', choices=moznostiZaPodVrstoObiska)
+    # previri da je izpoljen eden od obeh
+    casovniIntervalMedDvemaObiskoma = forms.CharField(label='Časovni interval med dvema obiskoma')
+    casovnoObdobje = forms.CharField(label='Časovno obdobje')
+    # dobi od uporabnika
+    izvajalecZdravstveneDejavnosti = forms.ModelChoiceField(queryset=IzvajalecZdravstveneDejavnosti.objects.all())
+
+    class Meta:
+        model = DelavniNalog
+        fields = ['zdravnik', 'bolezn', 'datumPrvegaObiska', 'nujnostObiska', 'steviloObiskov', 'vrstaObiska',
+                  'podVrstaObiska', 'casovniIntervalMedDvemaObiskoma', 'casovnoObdobje',
+                  'izvajalecZdravstveneDejavnosti']

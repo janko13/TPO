@@ -423,3 +423,13 @@ def aktivacijaLinka(request, pk):
         return render(request, 'ps/registracija_potekla.html')
 
     return HttpResponseRedirect('/ps/prijavljen')
+
+#tocka 5
+class DodajDelavniNalog(CreateView):
+    model = DelavniNalog
+    form_class = DelavniNalogForm
+    success_url = '/ps/prijavlen/'
+
+    def form_valid(self, form):
+        # form.instance.user = self.request.user
+        return super(DodajDelavniNalog, self).form_valid(form)

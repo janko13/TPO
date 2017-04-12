@@ -1,8 +1,7 @@
 {% extends 'ps/base1.html' %}
 {% block body1 %}
 <div>
-    {% block body %}
-    {% endblock %}
+
     <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
     {% if user.groups.all.0.name == "Admin" %}
     <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
@@ -13,7 +12,11 @@
     {% if user.groups.all.0.name == "Medicinska sestra" %}
     <a href="{% url 'ps:visit' %}">Planiranje obiskov</a>
     {% endif %}
+    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Vodja PS" %}
+    <a href="{% url 'ps:dodajDelavniNalog' %}">Ustvari delovni nalog</a>
+    {% endif %}
     <a href="{% url 'ps:odjava' %}">Odjava</a>
-
+    {% block body %}
+    {% endblock %}
 </div>
 {% endblock %}
