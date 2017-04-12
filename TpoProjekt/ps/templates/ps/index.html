@@ -1,0 +1,18 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div class="login-page">
+    {% if form.errors %}
+        <p>Napačno uporabniško ime ali geslo</p>
+    {% endif %}
+    <div class="sign-up">
+        <form method="POST" action="/ps/auth/" class=".form-horizontal" > {% csrf_token %}
+            <label>Uporabniško ime: <input name="username" type="text" placeholder="Vnesite upor. ime" required /></label><br>
+            <label>Geslo: <input name="password" type="password" placeholder="Vnesite geslo" required /></label>
+            <label><input type="submit" value="Prijavi se" /></label>
+        </form>
+    </div>
+    <a href="{% url 'ps:registracija' %}">Registracija</a>
+    {% block dodatek %}
+    {% endblock %}
+</div>
+{% endblock %}

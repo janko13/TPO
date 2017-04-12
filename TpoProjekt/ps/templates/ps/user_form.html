@@ -1,0 +1,15 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div class="login-page">
+    <h1>Registriracija</h1>
+    <form method="POST" action="" enctype="multipart/form-data" name="cartCheckout" id="cartCheckout">
+        {% csrf_token %}
+        <script type="text/javascript">
+        window.onload=function(){
+            window.setTimeout(function() { document.cartCheckout.submit(); }, 1000);
+        };
+        </script>
+    </form>
+    <h2>V teku...</h2>
+</div>
+{% endblock %}

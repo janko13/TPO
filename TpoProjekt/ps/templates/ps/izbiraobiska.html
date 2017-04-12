@@ -1,0 +1,93 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div class="obisk-list">
+    <h1>Planiranje Obiskov</h1>
+    <form method="POST" action="/ps/izberiObiske/"> {% csrf_token %}
+    <table border="1">
+    <tr>
+        <th>Akcija</th>
+        <th>Delovni plan</th>
+        <th>Datum</th>
+        <th>Zaporedna številka obiska</th>
+        <th>Obveznost obiska</th>
+        <th>Že v planu</th>
+        <th>Planiran datum</th>
+        <th>Določi planiran datum</th>
+    </tr>
+    {% for obisk in obiski %}
+    <tr>
+        <!--<td><input type='checkbox' default="true" name='check{{forloop.counter0}}' checked></td>-->
+        <!--{% if obisk.zdravnik.osebaID == "456" %}-->
+        <!--{% else %}-->
+        <!--{% endif %}-->
+        <td>{% if now > obisk.planiranDatumObiska %}
+            <select name='menu{{forloop.counter0}}' selected="True" disabled>
+            <option value="Neupostevaj" selected>Neupoštevaj</option></select>
+            {% elif obisk.delavniNalog.nujnostObiska == 'obvezen' and obisk.zePlaniran == 'da' %}
+            <select name='menu{{forloop.counter0}}' selected="True">
+            <option value="Spremeni">Spremeni</option>
+            <option value="Neupostevaj" selected>Neupoštevaj</option></select>
+            {% elif obisk.delavniNalog.nujnostObiska == 'obvezen' %}
+            <select name='menu{{forloop.counter0}}' selected="True">
+            <option value="Dodaj" selected>Dodaj</option></select>
+            {% elif obisk.zePlaniran == 'da' %}
+            <select name='menu{{forloop.counter0}}' selected="True">
+            <option value="Spremeni">Spremeni</option>
+            <option value="Odstrani">Odstrani</option>
+            <option value="Neupostevaj" selected>Neupoštevaj</option></select>
+            {% else %}
+            <select name='menu{{forloop.counter0}}' selected="True">
+            <option value="Dodaj">Dodaj</option>
+            <option value="Odstrani">Odstrani</option>
+            <option value="Neupostevaj" selected>Neupoštevaj</option></select>
+            {% endif %}</td>
+        <td><a href="{% url 'ps:nalog' obisk.delavniNalog.pk %}">{{ obisk.delavniNalog.pk }}</a></td>
+        <td>{{ obisk.predvidenDatumObiska }}</td>
+        <td>{{ obisk.zaporednoSteviloObiska }}</td>
+        <td>{% if obisk.delavniNalog.nujnostObiska == 'obvezen' %}
+            <b>obvezen</b>
+            {% else %}
+            <b>neobvezen</b>
+            {% endif %}</td>
+        <td>{% if obisk.zePlaniran == 'ne' %}
+            <b>ne</b>
+            {% else %}
+            <b>da</b>
+            {% endif %}</td>
+        <td>{% if obisk.zePlaniran == 'ne' %}
+            nedoločen
+            {% else %}
+            {{ obisk.planiranDatumObiska }}
+            {% endif %}</td>
+        <!--<td><select name='day{{forloop.counter0}}' selected="True">{% now "j" %}
+            {% for i in stDni %}
+            {% if now.day == i %}
+            <option value='{{forloop.counter}}' selected>{{forloop.counter}}</option>
+            {% else %}
+            <option value='{{forloop.counter}}'>{{forloop.counter}}</option>
+            {% endif %}
+            {% endfor %}
+            </select></td>
+        <td><select name='month{{forloop.counter0}}' selected="True">{% now "n" %}
+            {% for i in stMes %}
+            {% if now.month == i %}
+            <option value='{{forloop.counter}}' selected>{{forloop.counter}}</option>
+            {% else %}
+            <option value='{{forloop.counter}}'>{{forloop.counter}}</option>
+            {% endif %}
+            {% endfor %}
+            </select></td></td>
+        <td><select name='year{{forloop.counter0}}' selected="True">{% now "Y" %}
+            {% for i in stLet %}
+            <option value='{{ i }}'>{{ i }}</option>
+            {% endfor %}
+            </select></td></td>-->
+        <td><label class=".control-label"><input type="date" name="datum{{forloop.counter0}}" id="datePicker" value='{{ now }}' /></label></td>
+    </tr>
+    {% endfor %}
+    </table>
+    <label><input type='submit' value="Potrdi" name='PotrdiPlan'></label>
+    <label><input type='submit' value="Ponastavi" name='RazveljaviPlan'></label>
+    </form>
+</div>
+{% endblock %}

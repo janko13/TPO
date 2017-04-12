@@ -1,0 +1,60 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div class="login-page">
+    <h3>Pozdravljen, {{ user.username }}</h3>
+
+    <h1>Seznam delovnih nalogov</h1>
+    <form method="GET" class="form-vertical" action="/ps/seznamDN/res/">
+        <h3>Časovno obdobje izdaje</h3>
+        <label class=".control-label">Od <input type="date" name="casOd"  /></label>
+        <label class=".control-label">Do <input type="date" name="casDo" /></label>
+        <h3>Način obiska</h3>
+        <label class=".control-label">Vrsta obiska
+            <select type="search" name="vrsta" >
+                <option value="vsi">Vsi</option>
+                <option value="preventivni obisk">Preventivni</option>
+                <option value="kurativni obisk">Kurativni</option>
+            </select>
+        </label>
+        <label class=".control-label">Podvrsta obiska
+            <select type="search" name="podvrsta" >
+                <option value="vsi">Vsi</option>
+                <option value="obisk nosečnice">obisk nosečnice</option>
+                <option value="obisk otročičnice in novorojenčka">obisk otročičnice in novorojenčka</option>
+                <option value="preventiva starostnika">preventiva starostnika</option>
+                <option value="aplikacija inekcije">aplikacija inekcije</option>
+                <option value="odvzem krvi">odvzem krvi</option>
+                <option value="kontrola zdravstvenega stanja">kontrola zdravstvenega stanja</option>
+            </select>
+        </label>
+        {% if user.groups.all.0.name != "Zdravnik" %}
+        <h3>Izdajatelj DN - zdravnik/vodja PS</h3>
+        <label class=".control-label">Ime<input type="search" name="imeI" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekI" /></label>
+        {% endif %}
+        <h3>Pacient</h3>
+        <label class=".control-label">Ime<input type="search" name="imeP" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekP" /></label>
+        {% if user.groups.all.0.name != "Medicinska sestra" %}
+        <h3>Zadolžena patronažna sestra</h3>
+        <label class=".control-label">Ime<input type="search" name="imeZ" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekZ" /></label>
+        <h3>Nadomestna patronažna sestra</h3>
+        <label class=".control-label">Ime<input type="search" name="imeN" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekN" /></label>
+        {% endif %}
+        <br>
+        <label class="btn btn-default"><input type="submit" value="Išči" /></label>
+    </form>
+
+    <br>
+    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
+    {% if user.groups.all.0.name == "Admin" %}
+    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
+    {% endif %}
+    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
+    <a href="{% url 'ps:dodajOsebje' %}">Seznam izdanih delovnih nalogov</a>
+    {% endif %}
+    <a href="{% url 'ps:odjava' %}">Odjava</a>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div>
+    <h3>Pozdravljen, {{ user.username }}</h3>
+
+    <h1>Delavni nalog: {{ delavninalog.pk }}</h1>
+    <ul>
+        <li>
+            <b>Zdravnik:</b> {{ delavninalog.zdravnik.ime }} {{ delavninalog.zdravnik.priimek }}
+        </li>
+        <li>
+            <b>Pacient(i):</b>
+            <ul>
+            {% for p in pacienti %}
+                <li>{{ p.pacient.ime }} {{ p.pacient.priimek }}</li>
+            {% endfor %}
+            </ul>
+        </li>
+        <li>
+            <b>Zadolžena medicinska sestra:</b> {{ prvi.pacient.okolisID.medicinskaSestra.ime }} {{ prvi.pacient.okolisID.medicinskaSestra.priimek }}
+        </li>
+        <li>
+            <b>Bolezen:</b> {{ delavninalog.bolezn.imeBolezni }}
+        </li>
+        <li>
+            <b>Datum prvega obiska:</b> {{ delavninalog.datumPrvegaObiska }}
+        </li>
+        <li>
+            <b>Nujnost obiska:</b> {{ delavninalog.nujnostObiska }}
+        </li>
+        <li>
+            <b>Število obiskov:</b> {{ delavninalog.steviloObiskov }}
+            <ul>
+            {% for o in obiski %}
+                <li> <b>Predviden datum {{ o.zaporednoSteviloObiska }}. obiska: </b>{{ o.predvidenDatumObiska }}</li>
+                <li> <b>Dejanski datum {{ o.zaporednoSteviloObiska }}. obiska: </b>{{ o.dejanskiDatumObiska }}</li>
+            {% endfor %}
+            </ul>
+        </li>
+        <li>
+            <b>Vrsta obiska:</b> {{ delavninalog.vrstaObiska }}
+        </li>
+        <li>
+            <b>Podvrsta obiska:</b> {{ delavninalog.podVrstaObiska }}
+        </li>
+        <li>
+            <b>Časovni interval med dvema obiskoma:</b> {{ delavninalog.casovniIntervalMedDvemaObiskoma }}
+        </li>
+        <li>
+            <b>Časovno obdobje:</b> {{ delavninalog.casovnoObdobje }}
+        </li>
+        <li>
+            <b>Izvajalec zdravstvene dejavnosti:</b> {{ delavninalog.izvajalecZdravstveneDejavnosti.imeIzvajalecZdravstveneDejavnosti }}
+        </li>
+        <li>
+            <b>Datum vnosa:</b> {{ delavninalog.datumVnosa }}
+        </li>
+    </ul>
+
+    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
+    {% if user.groups.all.0.name == "Admin" %}
+    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
+    {% endif %}
+    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
+    <a href="{% url 'ps:dodajOsebje' %}">Seznam izdanih delovnih nalogov</a>
+    {% endif %}
+    <a href="{% url 'ps:odjava' %}">Odjava</a>
+</div>
+{% endblock %}
