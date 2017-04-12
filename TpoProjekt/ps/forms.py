@@ -78,11 +78,19 @@ class PacientForm(forms.ModelForm):
     ime = forms.CharField(label='Ime')
     priimek = forms.CharField(label='Priimek')
     zavarovanjeID = forms.CharField(label='Številka zdravstvenega zavarovanja')
-    datumRojstva = forms.DateField(label='Datum rojstva')
+    datumRojstva = forms.DateField(label='Datum rojstva', widget=forms.DateInput(attrs={'type': 'date'}))
     spol = forms.ChoiceField(label='Spol', choices=GEN)
     naslov = forms.CharField(label='Naslov')
     posta = forms.ModelChoiceField(queryset=Posta.objects.all(), label='Pošta')
     okolisID = forms.ModelChoiceField(queryset=Okolis.objects.all(), label='Okoliš')
+
+    def clean_zavarovanjeID(self):
+        pacienti = list(Pacient.objects.all().values('zavarovanjeID'))
+        zavarovanjeID = self.cleaned_data.get('zavarovanjeID')
+        for d in pacienti:
+            if zavarovanjeID == d['zavarovanjeID']:
+                raise forms.ValidationError("Uporabnik s tem zavarovanjem že obstaja")
+        return zavarovanjeID
 
     class Meta:
         model = Pacient
@@ -106,6 +114,13 @@ class RacunOsebjeForm(forms.ModelForm):
     vloga = forms.ChoiceField(label='Vloga', choices=GEN)
     izvajalecZdravstveneDejavnosti = forms.ModelChoiceField(queryset=IzvajalecZdravstveneDejavnosti.objects.all(), label='Izvajalec zdravstvene dejavnosti')
 
+    def clean_osebaID(self):
+        osebje = list(RacunOsebje.objects.all().values('osebaID'))
+        osebaID = self.cleaned_data.get('osebaID')
+        for d in osebje:
+            if osebaID == d['osebaID']:
+                raise forms.ValidationError("Uporabnik s tem ID-jem že obstaja")
+        return osebaID
 
     def clean_email(self):
         pacienti = list(RacunPacient.objects.all().values('email'))

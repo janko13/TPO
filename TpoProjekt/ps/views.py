@@ -345,6 +345,7 @@ def logout(request):
     return render_to_response('ps/logout.html', RequestContext(request, {}))
 
 #prikaz obiskov
+#prikaz obiskov
 def VisitView(request):
     pacient_delavniNalog = PacientDelovniNalog.objects.filter(pacient__okolisID__medicinskaSestra__email__exact=request.user)
     idDelavniNalogi = pacient_delavniNalog.values_list('delavniNalog_id', flat=True)
@@ -352,17 +353,18 @@ def VisitView(request):
     obiski = Obisk.objects.filter(delavniNalog__in = delavniNalogi.values('id'), obiskOpravljen__exact = 'ne').order_by('predvidenDatumObiska')
     stDni = range(1, 32)
     stMes = range(1, 13)
-    now = datetime.date.today()
+    today = datetime.date.today()
     tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-    stLet = range(now.year, now.year + 6)
-    now = str(now)
+    stLet = range(today.year, today.year + 6)
+    now = str(today)
     context = {
         'obiski': obiski,
         'stDni': stDni,
         'stMes': stMes,
         'stLet': stLet,
         'now': now,
-        'tomorrow': tomorrow
+        'tomorrow': tomorrow,
+        'today': today
     }
     print(now)
     return render(request, 'ps/izbiraobiska.html', context)

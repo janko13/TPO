@@ -1,20 +1,19 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="sl">
-<head>
-    <meta charset="UTF-8">
-    <title>Uporabniki</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'ps/style.css' %}" />
-    <script src="{% static 'ps/scripts.js' %}"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-</head>
-<body>
-<header style="height: 100px; background: green">
-    Uporabniki
-</header>
+{% extends 'ps/base1.html' %}
+{% block body1 %}
+<div>
+    {% block body %}
+    {% endblock %}
+    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
+    {% if user.groups.all.0.name == "Admin" %}
+    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
+    {% endif %}
+    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
+    <a href="{% url 'ps:seznamDN' %}">Seznam izdanih delovnih nalogov</a>
+    {% endif %}
+    {% if user.groups.all.0.name == "Medicinska sestra" %}
+    <a href="{% url 'ps:visit' %}">Planiranje obiskov</a>
+    {% endif %}
+    <a href="{% url 'ps:odjava' %}">Odjava</a>
 
-{% block body %}
+</div>
 {% endblock %}
-
-</body>
-</html>

@@ -20,7 +20,7 @@
         <!--{% if obisk.zdravnik.osebaID == "456" %}-->
         <!--{% else %}-->
         <!--{% endif %}-->
-        <td>{% if now > obisk.planiranDatumObiska %}
+        <td>{% if today > obisk.planiranDatumObiska and obisk.zePlaniran == 'da' %}
             <select name='menu{{forloop.counter0}}' selected="True" disabled>
             <option value="Neupostevaj" selected>Neupoštevaj</option></select>
             {% elif obisk.delavniNalog.nujnostObiska == 'obvezen' and obisk.zePlaniran == 'da' %}
@@ -42,7 +42,7 @@
             <option value="Neupostevaj" selected>Neupoštevaj</option></select>
             {% endif %}</td>
         <td><a href="{% url 'ps:nalog' obisk.delavniNalog.pk %}">{{ obisk.delavniNalog.pk }}</a></td>
-        <td>{{ obisk.predvidenDatumObiska }}</td>
+        <td>{{ obisk.predvidenDatumObiska.day }}. {{ obisk.predvidenDatumObiska.month }}. {{ obisk.predvidenDatumObiska.year }}</td>
         <td>{{ obisk.zaporednoSteviloObiska }}</td>
         <td>{% if obisk.delavniNalog.nujnostObiska == 'obvezen' %}
             <b>obvezen</b>
@@ -57,7 +57,7 @@
         <td>{% if obisk.zePlaniran == 'ne' %}
             nedoločen
             {% else %}
-            {{ obisk.planiranDatumObiska }}
+            {{ obisk.planiranDatumObiska.day }}. {{ obisk.planiranDatumObiska.month }}. {{ obisk.planiranDatumObiska.year }}
             {% endif %}</td>
         <!--<td><select name='day{{forloop.counter0}}' selected="True">{% now "j" %}
             {% for i in stDni %}

@@ -1,8 +1,6 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div class="login-page">
-    <h3>Pozdravljen, {{ user.username }}</h3>
-
+<div>
     <h1>Seznam delovnih nalogov</h1>
     <form method="GET" class="form-vertical" action="/ps/seznamDN/res/">
         <h3>Časovno obdobje izdaje</h3>
@@ -48,13 +46,5 @@
     </form>
 
     <br>
-    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
-    {% if user.groups.all.0.name == "Admin" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Seznam izdanih delovnih nalogov</a>
-    {% endif %}
-    <a href="{% url 'ps:odjava' %}">Odjava</a>
 </div>
 {% endblock %}

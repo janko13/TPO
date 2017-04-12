@@ -1,14 +1,6 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div class="login-page">
+<div>
     <h1>Pozdravljen, {{ user.username }}</h1>
-    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
-    {% if user.groups.all.0.name == "Admin" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
-    <a href="{% url 'ps:seznamDN' %}">Seznam izdanih delovnih nalogov</a>
-    {% endif %}
-    <a href="{% url 'ps:odjava' %}">Odjava</a>
 </div>
 {% endblock %}

@@ -1,8 +1,6 @@
 {% extends 'ps/base.html' %}
 {% block body %}
 <div>
-    <h3>Pozdravljen, {{ user.username }}</h3>
-
     <h1>Delavni nalog: {{ delavninalog.pk }}</h1>
     <ul>
         <li>
@@ -23,7 +21,7 @@
             <b>Bolezen:</b> {{ delavninalog.bolezn.imeBolezni }}
         </li>
         <li>
-            <b>Datum prvega obiska:</b> {{ delavninalog.datumPrvegaObiska }}
+            <b>Datum prvega obiska:</b> {{ delavninalog.datumPrvegaObiska.day }}. {{ delavninalog.datumPrvegaObiska.month }}. {{ delavninalog.datumPrvegaObiska.year }}
         </li>
         <li>
             <b>Nujnost obiska:</b> {{ delavninalog.nujnostObiska }}
@@ -32,8 +30,8 @@
             <b>Število obiskov:</b> {{ delavninalog.steviloObiskov }}
             <ul>
             {% for o in obiski %}
-                <li> <b>Predviden datum {{ o.zaporednoSteviloObiska }}. obiska: </b>{{ o.predvidenDatumObiska }}</li>
-                <li> <b>Dejanski datum {{ o.zaporednoSteviloObiska }}. obiska: </b>{{ o.dejanskiDatumObiska }}</li>
+                <li> <b>Predviden datum {{ o.zaporednoSteviloObiska }}. obiska: </b>{{ o.predvidenDatumObiska.day }}. {{ o.predvidenDatumObiska.month }}. {{ o.predvidenDatumObiska.year }}</li>
+                <li> <b>Dejanski datum {{ o.zaporednoSteviloObiska }}. obiska: </b>{{ o.dejanskiDatumObiska.day }}. {{ o.dejanskiDatumObiska.month }}. {{ o.dejanskiDatumObiska.year }}</li>
             {% endfor %}
             </ul>
         </li>
@@ -53,17 +51,9 @@
             <b>Izvajalec zdravstvene dejavnosti:</b> {{ delavninalog.izvajalecZdravstveneDejavnosti.imeIzvajalecZdravstveneDejavnosti }}
         </li>
         <li>
-            <b>Datum vnosa:</b> {{ delavninalog.datumVnosa }}
+            <b>Datum vnosa:</b> {{ delavninalog.datumVnosa.day }}. {{ delavninalog.datumVnosa.month }}. {{ delavninalog.datumVnosa.year }}
         </li>
     </ul>
 
-    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
-    {% if user.groups.all.0.name == "Admin" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Seznam izdanih delovnih nalogov</a>
-    {% endif %}
-    <a href="{% url 'ps:odjava' %}">Odjava</a>
 </div>
 {% endblock %}

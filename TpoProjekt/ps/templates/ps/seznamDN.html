@@ -1,8 +1,6 @@
 {% extends 'ps/base.html' %}
 {% block body %}
 <div>
-    <h3>Pozdravljen, {{ user.username }}</h3>
-
     <h1>Seznam delovnih nalogov</h1>
     <table class="table-condensed">
         <thead>
@@ -22,7 +20,7 @@
 
             <tr>
                 <td> <a href="{% url 'ps:nalog' p.delavniNalog.pk %}">{{ p.delavniNalog.pk }}</a></td>
-                <td>{{ p.delavniNalog.datumVnosa }}</td>
+                <td>{{ p.delavniNalog.datumVnosa.day }}. {{ p.delavniNalog.datumVnosa.month }}. {{ p.delavniNalog.datumVnosa.year }}</td>
                 <td>{{ p.delavniNalog.vrstaObiska }}</td>
                 <td>{{ p.delavniNalog.podVrstaObiska }}</td>
                 <td>{{ p.delavniNalog.zdravnik.ime }} {{ p.delavniNalog.zdravnik.email }}</td>
@@ -36,13 +34,5 @@
     </table>
     <br>
 
-    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
-    {% if user.groups.all.0.name == "Admin" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Seznam izdanih delovnih nalogov</a>
-    {% endif %}
-    <a href="{% url 'ps:odjava' %}">Odjava</a>
 </div>
 {% endblock %}
