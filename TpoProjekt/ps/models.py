@@ -77,6 +77,8 @@ class RacunOsebje(models.Model):
     telefon = models.CharField(max_length=25)
     vloga = models.CharField(max_length=40, choices=GEN, default='Zdravnik')
     neuspesenVnos = models.IntegerField(default=0)
+    zadnjaPrijava = models.DateTimeField(default=datetime.datetime.now())
+    trenutnaPrijava = models.DateTimeField(default=datetime.datetime.now())
 
     def __str__(self):
         return self.ime + ' ' + self.priimek + ' ' + self.vloga
@@ -103,6 +105,8 @@ class RacunPacient(models.Model):
     sorodstvoKontaktna = models.CharField(max_length=250, blank=True, null=True)
     neuspesenVnos = models.IntegerField(default=0)
     casregistracije = models.DateTimeField(default=datetime.datetime.now(), null=True)
+    zadnjaPrijava = models.DateTimeField(default=datetime.datetime.now())
+    trenutnaPrijava = models.DateTimeField(default=datetime.datetime.now())
 
 
     def __str__(self):

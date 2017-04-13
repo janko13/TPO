@@ -384,6 +384,16 @@ def auth_view(request):
 
     if user is not None:
         auth.login(request, user)
+
+        if user.username == 'admin':
+            pass
+        elif user.groups.all()[0].name == 'Pacient':
+            racun = RacunPacient.objects.get(email=user.username)
+            racun.zadnjaPrijava = racun.trenutnaPrijava
+            racun.trenutnaPrijava = datetime.datetime.now()
+        else:
+            print('je osebje')
+
         global stevec
         stevec = 0
         return HttpResponseRedirect('/ps/prijavljen/')
@@ -553,6 +563,6 @@ def dodajDN(request):
 
     return render(request, 'ps/delavninalog_form.html', context)
 
-def resend_mail(request, email):
-    print('username:' + request.user.username)
-    return HttpResponseRedirect('/ps/')
+#def resend_mail(request, email):
+#    print('username:' + request.user.username)
+#    return HttpResponseRedirect('/ps/')
