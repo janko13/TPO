@@ -5,15 +5,15 @@ from django.contrib.auth.hashers import make_password
 from .models import *
 
 class RacunPacientForm(forms.ModelForm):
-    imeKontaktna = forms.CharField(max_length=200, label='Ime kontaktne*', required=False)
-    priimekKontaktna = forms.CharField(max_length=200, label='Priimek kontaktne*', required=False)
-    naslovKontaktna = forms.CharField(max_length=200, label='Naslov kontaktne*', required=False)
-    sorodstvoKontaktna = forms.CharField(max_length=200, label='Sorodstveno razmerje kontaktne*', required=False)
-    geslo = forms.CharField(widget=forms.PasswordInput, label='Geslo')
-    geslo2 = forms.CharField(widget=forms.PasswordInput, label='Ponovno vnesite geslo')
-    email = forms.EmailField(label='Elektronski pošta')
-    telefon = forms.CharField(label='Telefon')
-    telefonKontaktna = forms.CharField(label='Telefon kontaktne*', required=False)
+    imeKontaktna = forms.CharField(max_length=200, label='Ime kontaktne*', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    priimekKontaktna = forms.CharField(max_length=200, label='Priimek kontaktne*', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    naslovKontaktna = forms.CharField(max_length=200, label='Naslov kontaktne*', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    sorodstvoKontaktna = forms.CharField(max_length=200, label='Sorodstveno razmerje kontaktne*', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    geslo = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Geslo')
+    geslo2 = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Ponovno vnesite geslo')
+    email = forms.EmailField(label='Elektronski pošta', widget=forms.EmailInput(attrs={'class' : 'form-control'}))
+    telefon = forms.CharField(label='Telefon', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    telefonKontaktna = forms.CharField(label='Telefon kontaktne*', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
 
     def clean(self):
         cleaned_data = super(RacunPacientForm, self).clean()
@@ -75,12 +75,12 @@ class PacientForm(forms.ModelForm):
         ('M', 'moški'),
         ('Ž', 'ženska'),
     )
-    ime = forms.CharField(label='Ime')
-    priimek = forms.CharField(label='Priimek')
-    zavarovanjeID = forms.CharField(label='Številka zdravstvenega zavarovanja')
-    datumRojstva = forms.DateField(label='Datum rojstva', widget=forms.DateInput(attrs={'type': 'date'}))
+    ime = forms.CharField(label='Ime', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    priimek = forms.CharField(label='Priimek', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    zavarovanjeID = forms.CharField(label='Številka zdravstvenega zavarovanja', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    datumRojstva = forms.DateField(label='Datum rojstva', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
     spol = forms.ChoiceField(label='Spol', choices=GEN)
-    naslov = forms.CharField(label='Naslov')
+    naslov = forms.CharField(label='Naslov', widget=forms.TextInput(attrs={'class' : 'form-control'}))
     posta = forms.ModelChoiceField(queryset=Posta.objects.all(), label='Pošta')
     okolisID = forms.ModelChoiceField(queryset=Okolis.objects.all(), label='Okoliš')
 
@@ -91,6 +91,12 @@ class PacientForm(forms.ModelForm):
             if zavarovanjeID == d['zavarovanjeID']:
                 raise forms.ValidationError("Uporabnik s tem zavarovanjem že obstaja")
         return zavarovanjeID
+
+    def __init__(self, *args, **kwargs):
+        super(PacientForm, self).__init__(*args, **kwargs)
+        self.fields['spol'].widget.attrs.update({'class': 'form-control'})
+        self.fields['posta'].widget.attrs.update({'class': 'form-control'})
+        self.fields['okolisID'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = Pacient
@@ -114,15 +120,22 @@ class PacientFormExtra(forms.ModelForm):
         ('Hči', 'hči'),
         ('Drugo', 'drugo'),
     )
-    ime = forms.CharField(label='Ime')
-    priimek = forms.CharField(label='Priimek')
-    zavarovanjeID = forms.CharField(label='Številka zdravstvenega zavarovanja')
-    datumRojstva = forms.DateField(label='Datum rojstva', widget=forms.DateInput(attrs={'type': 'date'}))
+    ime = forms.CharField(label='Ime', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    priimek = forms.CharField(label='Priimek', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    zavarovanjeID = forms.CharField(label='Številka zdravstvenega zavarovanja', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    datumRojstva = forms.DateField(label='Datum rojstva', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
     spol = forms.ChoiceField(label='Spol', choices=GEN)
-    naslov = forms.CharField(label='Naslov')
+    naslov = forms.CharField(label='Naslov', widget=forms.TextInput(attrs={'class': 'form-control'}))
     posta = forms.ModelChoiceField(queryset=Posta.objects.all(), label='Pošta')
     okolisID = forms.ModelChoiceField(queryset=Okolis.objects.all(), label='Okoliš')
     sorodstvoRacun = forms.ChoiceField(label='Sorodstvo', choices=SOR)
+
+    def __init__(self, *args, **kwargs):
+        super(PacientFormExtra, self).__init__(*args, **kwargs)
+        self.fields['spol'].widget.attrs.update({'class': 'form-control'})
+        self.fields['posta'].widget.attrs.update({'class': 'form-control'})
+        self.fields['okolisID'].widget.attrs.update({'class': 'form-control'})
+        self.fields['sorodstvoRacun'].widget.attrs.update({'class': 'form-control'})
 
     def clean_zavarovanjeID(self):
         pacienti = list(Pacient.objects.all().values('zavarovanjeID'))
@@ -149,15 +162,20 @@ class RacunOsebjeForm(forms.ModelForm):
         ('Uslužbenec', 'Uslužbenec'),
     )
 
-    ime = forms.CharField(max_length=200, label='Ime')
-    priimek = forms.CharField(max_length=200, label='Priimek')
-    geslo = forms.CharField(widget=forms.PasswordInput, label='Geslo')
-    geslo2 = forms.CharField(widget=forms.PasswordInput, label='Ponovno vnesite geslo')
-    email = forms.EmailField(label='Elektronski pošta')
-    telefon = forms.CharField(label='Telefon')
-    osebaID = forms.CharField(label='ID osebe')
+    ime = forms.CharField(max_length=200, label='Ime', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    priimek = forms.CharField(max_length=200, label='Priimek', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    geslo = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Geslo')
+    geslo2 = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Ponovno vnesite geslo')
+    email = forms.EmailField(label='Elektronski pošta', widget=forms.EmailInput(attrs={'class' : 'form-control'}))
+    telefon = forms.CharField(label='Telefon', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    osebaID = forms.CharField(label='ID osebe', widget=forms.TextInput(attrs={'class' : 'form-control'}))
     vloga = forms.ChoiceField(label='Vloga', choices=GEN)
     izvajalecZdravstveneDejavnosti = forms.ModelChoiceField(queryset=IzvajalecZdravstveneDejavnosti.objects.all(), label='Izvajalec zdravstvene dejavnosti')
+
+    def __init__(self, *args, **kwargs):
+        super(RacunOsebjeForm, self).__init__(*args, **kwargs)
+        self.fields['vloga'].widget.attrs.update({'class': 'form-control'})
+        self.fields['izvajalecZdravstveneDejavnosti'].widget.attrs.update({'class': 'form-control'})
 
     def clean_osebaID(self):
         osebje = list(RacunOsebje.objects.all().values('osebaID'))
@@ -211,9 +229,9 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'password']
 
 class GesloForm(forms.ModelForm):
-    geslo = forms.CharField(widget=forms.PasswordInput, label='Staro geslo')
-    password = forms.CharField(widget=forms.PasswordInput, label='Novo geslo')
-    geslo2 = forms.CharField(widget=forms.PasswordInput, label='Ponovno vnesite novo geslo')
+    geslo = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Staro geslo')
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Novo geslo')
+    geslo2 = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'form-control'}), label='Ponovno vnesite novo geslo')
 
     def clean_password(self):
         geslo = self.cleaned_data.get('password')
@@ -280,15 +298,18 @@ class DelavniNalogForm(forms.ModelForm):
     #dobi od uporabnika
     # zdravnik = forms.ModelChoiceField(queryset=RacunOsebje.objects.all())
     bolezn = forms.ModelChoiceField(label='Bolezen', queryset=SifrantBolezn.objects.all(), required=False)
-    datumPrvegaObiska = forms.DateField(label='Datum prvega obiska')#, widget=forms.DateInput(attrs={'type': 'date'}))
-    nujnostObiska = forms.ChoiceField(label='Nujnost obiska', choices=nujnost)
-    steviloObiskov = forms.IntegerField(label='Število obiskov')
-    vrstaObiska = forms.ChoiceField(label='Vrsta obiska', choices=moznostiZaVrstoObiska)
-    podVrstaObiska = forms.ChoiceField(label='Pod vrsta obiska', choices=moznostiZaPodVrstoObiska)
+    datumPrvegaObiska = forms.DateField(label='Datum prvega obiska', widget=forms.TextInput(attrs={'class' : 'form-control'}))#, widget=forms.DateInput(attrs={'type': 'date'}))
+    nujnostObiska = forms.ChoiceField(label='Nujnost obiska', choices=nujnost, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    steviloObiskov = forms.IntegerField(label='Število obiskov', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    vrstaObiska = forms.ChoiceField(label='Vrsta obiska', choices=moznostiZaVrstoObiska, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    podVrstaObiska = forms.ChoiceField(label='Pod vrsta obiska', choices=moznostiZaPodVrstoObiska, widget=forms.TextInput(attrs={'class' : 'form-control'}))
     # previri da je izpoljen eden od obeh
-    casovniIntervalMedDvemaObiskoma = forms.CharField(label='Časovni interval med dvema obiskoma', required=False)
-    casovnoObdobje = forms.CharField(label='Časovno obdobje', required=False)
+    casovniIntervalMedDvemaObiskoma = forms.CharField(label='Časovni interval med dvema obiskoma', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    casovnoObdobje = forms.CharField(label='Časovno obdobje', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
 
+    def __init__(self, *args, **kwargs):
+        super(DelavniNalogForm, self).__init__(*args, **kwargs)
+        self.fields['bolezn'].widget.attrs.update({'class': 'form-control'})
     # dobi od uporabnika
     # izvajalecZdravstveneDejavnosti = forms.ModelChoiceField(queryset=IzvajalecZdravstveneDejavnosti.objects.all())
 

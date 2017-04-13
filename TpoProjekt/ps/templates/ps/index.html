@@ -1,14 +1,22 @@
 {% extends 'ps/base1.html' %}
 {% block body1 %}
-<div class="login-page">
+<nav  class="navbar navbar-default">
+    <div  class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'ps:index' %}">TPO Patronaža</a>
+        </div>
+    </div>
+</nav>
+<div class="form-group text-center">
     {% if form.errors %}
         <p>Napačno uporabniško ime ali geslo</p>
     {% endif %}
-    <div class="sign-up">
+    <div>
         <form method="POST" action="/ps/auth/" class=".form-horizontal" > {% csrf_token %}
-            <label>Uporabniško ime: <input name="username" type="text" placeholder="Vnesite upor. ime" required /></label><br>
-            <label>Geslo: <input name="password" type="password" placeholder="Vnesite geslo" required /></label>
-            <label><input type="submit" value="Prijavi se" /></label>
+            <label>Uporabniško ime: <input class="form-control" name="username" type="text" placeholder="Vnesite upor. ime" required /></label><br>
+            <label>Geslo: <input class="form-control" name="password" type="password" placeholder="Vnesite geslo" required /></label>
+            <br>
+            <label><input  class="form-control" type="submit" value="Prijavi se" /></label>
         </form>
     </div>
     <a href="{% url 'ps:registracija' %}">Registracija</a>

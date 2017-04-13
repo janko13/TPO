@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
-    Vaš račun še ni aktiviran!
-
-</body>
-</html>
+{% extends 'ps/base1.html' %}
+{% block body1 %}
+<nav  class="navbar navbar-default">
+    <div  class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'ps:index' %}">TPO Patronaža</a>
+        </div>
+    </div>
+</nav>
+<div class="form-group text-center">
+    <h2>Vaš račun še ni aktiviran!</h2>
+    <a href="{% url 'ps:index' %}">Nazaj na prijavo</a><br>
+    <a href="{% url 'ps:inactive2' %}">Ponovno pošlji aktivacijski mail</a>
+</div>
+{% endblock %}

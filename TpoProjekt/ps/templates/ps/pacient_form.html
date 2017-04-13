@@ -1,12 +1,19 @@
 {% extends 'ps/base1.html' %}
 {% block body1 %}
-<div class="login-page">
-    <h1>Registriracija</h1>
+<nav  class="navbar navbar-default">
+    <div  class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'ps:index' %}">TPO Patronaža</a>
+        </div>
+    </div>
+</nav>
+<div class="form-group container" style="width: 500px">
+    <h1>Registracija</h1>
 
-    <form method="POST" action="" enctype="multipart/form-data">
+    <form method="POST" action="" enctype="multipart/form-data"  class=".form-horizontal">
          {% csrf_token %}
         {{ form.as_p }}
-        <label><input type="submit" value="Registriraj se!" name="reg" /></label>
+        <label><input class="form-control" type="submit" value="Registriraj se!" name="reg" /></label>
     </form>
 
 </div>

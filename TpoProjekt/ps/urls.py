@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^logout/$', views.logout, name='odjava'),
     url(r'^loggedin/$', views.loggedin),
     url(r'^inactive/$', views.inactive_view, name='inactive'),
+    url(r'^inactive2/$', views.resend_mail, name='inactive2'),
 
     # link activation
     url(r'^aktivacija/(?P<pk>[0-9]+)/$', views.aktivacijaLinka, name='aktivacija-linka'),

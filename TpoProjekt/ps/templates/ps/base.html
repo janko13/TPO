@@ -1,26 +1,35 @@
 {% extends 'ps/base1.html' %}
 {% block body1 %}
-<div>
+<nav  class="navbar navbar-default">
+    <div  class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'ps:index' %}">TPO Patronaža</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="{% url 'ps:geslo' %}">Spremeni geslo</a></li>
+            {% if user.groups.all.0.name == "Admin" %}
+            <li><a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a></li>
+            {% endif %}
+            {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
+            <li><a href="{% url 'ps:seznamDN' %}">Seznam izdanih delovnih nalogov</a></li>
+            {% endif %}
+            {% if user.groups.all.0.name == "Medicinska sestra" %}
+            <li><a href="{% url 'ps:visit' %}">Planiranje obiskov</a></li>
+            {% endif %}
+            {% if user.groups.all.0.name == "Pacient" %}
+            <li><a href="{% url 'ps:pacientRacunList' %}">Pregled oseb na uporabniškem računu</a></li>
+            <li><a href="{% url 'ps:dodajPacienta' %}">Dodaj osebo na uporabniški račun</a></li>
+            {% endif %}
+            {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Vodja PS" %}
+            <li><a href="{% url 'ps:dodajDelavniNalog' %}">Ustvari delovni nalog</a></li>
+            {% endif %}
+            <li><a href="{% url 'ps:odjava' %}">Odjava</a></li>
+        </ul>
 
-    <a href="{% url 'ps:geslo' %}">Spremeni geslo</a>
-    {% if user.groups.all.0.name == "Admin" %}
-    <a href="{% url 'ps:dodajOsebje' %}">Dodaj osebje</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Medicinska sestra" or user.groups.all.0.name == "Vodja PS" %}
-    <a href="{% url 'ps:seznamDN' %}">Seznam izdanih delovnih nalogov</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Medicinska sestra" %}
-    <a href="{% url 'ps:visit' %}">Planiranje obiskov</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Pacient" %}
-    <a href="{% url 'ps:pacientRacunList' %}">Pregled oseb na uporabniškem računu</a>
-    <a href="{% url 'ps:dodajPacienta' %}">Dodaj osebo na uporabniški račun</a>
-    {% endif %}
-    {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Vodja PS" %}
-    <a href="{% url 'ps:dodajDelavniNalog' %}">Ustvari delovni nalog</a>
-    {% endif %}
-    <a href="{% url 'ps:odjava' %}">Odjava</a>
+    </div>
+</nav>
+<div class="pagination-centered">
     {% block body %}
-    {% endblock %}
+            {% endblock %}
 </div>
 {% endblock %}

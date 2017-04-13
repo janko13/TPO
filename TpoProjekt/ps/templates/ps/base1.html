@@ -4,18 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Uporabniki</title>
+    <!--
     <link rel="stylesheet" type="text/css" href="{% static 'ps/style.css' %}" />
-    <script src="{% static 'ps/scripts.js' %}"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+    <link rel="stylesheet" type="text/css" href="{% static 'ps/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ps/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ps/bootstrap-reboot.min.css' %}">
+    <script src="{% static 'ps/bootstrap.min.js' %}"></script>
+    <script src="{% static 'ps/bootstrap.js' %}"></script>
+    <script src="{% static 'ps/jquery-3.2.0.min.js' %}"></script>
+-->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
-<header style="height: 100px; background: green">
-    Uporabniki
-</header>
-
+<body class="container">
 {% block body1 %}
 {% endblock %}
-
 </body>
 </html>

@@ -1,12 +1,12 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div class="login-page">
+<div class="form-group container" style="width: 500px">
     <h1>Spreminjanje gesla</h1>
 
-    <form method="POST" action="" enctype="multipart/form-data" class="form-vertical">
+    <form method="POST" action="" enctype="multipart/form-data">
          {% csrf_token %}
-        {{ form }}
-        <label><input type="submit" value="Spremeni geslo" /></label>
+        {{ form.as_p }}
+        <label class="control-label"><input class="form-control" type="submit" value="Spremeni geslo" /></label>
     </form>
 </div>
 {% endblock %}

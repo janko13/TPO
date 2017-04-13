@@ -1,6 +1,6 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div class="login-page">
+<div  class="form-group container" style="width: 500px">
     <h1>Kreiranje delavnega naloga</h1>
 
     <form method="POST" action="" enctype="multipart/form-data">
@@ -11,7 +11,7 @@
         {% for pacient in pacientForm.pacient %}
             <div>{{ pacient }}</div>
         {% endfor %}
-        <label><input type="submit" value="Dodaj delavni nalog" /></label>
+        <label><input class="form-control" type="submit" value="Dodaj delavni nalog" /></label>
     </form>
 
 

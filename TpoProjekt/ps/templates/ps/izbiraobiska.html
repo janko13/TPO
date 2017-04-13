@@ -1,9 +1,9 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div class="obisk-list">
+<div  class="form-group container">
     <h1>Planiranje Obiskov</h1>
     <form method="POST" action="/ps/izberiObiske/"> {% csrf_token %}
-    <table border="1">
+    <table class="table table-bordered">
     <tr>
         <th>Akcija</th>
         <th>Delovni plan</th>
@@ -86,8 +86,8 @@
     </tr>
     {% endfor %}
     </table>
-    <label><input type='submit' value="Potrdi" name='PotrdiPlan'></label>
-    <label><input type='submit' value="Ponastavi" name='RazveljaviPlan'></label>
+    <label><input class="form-control" type='submit' value="Potrdi" name='PotrdiPlan'></label>
+    <label><input class="form-control" type='submit' value="Ponastavi" name='RazveljaviPlan'></label>
     </form>
 </div>
 {% endblock %}

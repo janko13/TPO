@@ -1,12 +1,12 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div>
+<div class="form-group container" >
     <h1>Delavni nalog: {{ delavninalog.pk }}</h1>
-    <ul>
-        <li>
+    <ul class="list-group">
+        <li class="list-group-item">
             <b>Zdravnik:</b> {{ delavninalog.zdravnik.ime }} {{ delavninalog.zdravnik.priimek }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Pacient(i):</b>
             <ul>
             {% for p in pacienti %}
@@ -14,19 +14,19 @@
             {% endfor %}
             </ul>
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Zadolžena medicinska sestra:</b> {{ prvi.pacient.okolisID.medicinskaSestra.ime }} {{ prvi.pacient.okolisID.medicinskaSestra.priimek }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Bolezen:</b> {{ delavninalog.bolezn.imeBolezni }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Datum prvega obiska:</b> {{ delavninalog.datumPrvegaObiska.day }}. {{ delavninalog.datumPrvegaObiska.month }}. {{ delavninalog.datumPrvegaObiska.year }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Nujnost obiska:</b> {{ delavninalog.nujnostObiska }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Število obiskov:</b> {{ delavninalog.steviloObiskov }}
             <ul>
             {% for o in obiski %}
@@ -35,22 +35,22 @@
             {% endfor %}
             </ul>
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Vrsta obiska:</b> {{ delavninalog.vrstaObiska }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Podvrsta obiska:</b> {{ delavninalog.podVrstaObiska }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Časovni interval med dvema obiskoma:</b> {{ delavninalog.casovniIntervalMedDvemaObiskoma }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Časovno obdobje:</b> {{ delavninalog.casovnoObdobje }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Izvajalec zdravstvene dejavnosti:</b> {{ delavninalog.izvajalecZdravstveneDejavnosti.imeIzvajalecZdravstveneDejavnosti }}
         </li>
-        <li>
+        <li class="list-group-item">
             <b>Datum vnosa:</b> {{ delavninalog.datumVnosa.day }}. {{ delavninalog.datumVnosa.month }}. {{ delavninalog.datumVnosa.year }}
         </li>
     </ul>

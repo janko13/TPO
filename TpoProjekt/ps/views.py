@@ -372,7 +372,7 @@ def auth_view(request):
             stevec = 0
         return HttpResponseRedirect('/ps/')
 
-    if (not inactive_user is not None) and (username != 'admin'):
+    if (inactive_user is not None) and (username != 'admin'):
         print('username: ' + username)
         if (inactive_user[0].is_active == False):
             print(inactive_user[0].email)
@@ -552,3 +552,7 @@ def dodajDN(request):
             return HttpResponseRedirect('/ps/prijavljen')
 
     return render(request, 'ps/delavninalog_form.html', context)
+
+def resend_mail(request, email):
+    print('username:' + request.user.username)
+    return HttpResponseRedirect('/ps/')

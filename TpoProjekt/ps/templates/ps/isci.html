@@ -1,21 +1,21 @@
 {% extends 'ps/base.html' %}
 {% block body %}
-<div>
+<div class="form-group container" style="width: 500px">
     <h1>Seznam delovnih nalogov</h1>
     <form method="GET" class="form-vertical" action="/ps/seznamDN/res/">
         <h3>Časovno obdobje izdaje</h3>
-        <label class=".control-label">Od <input type="date" name="casOd"  /></label>
-        <label class=".control-label">Do <input type="date" name="casDo" /></label>
+        <label class="control-label">Od <input type="date" name="casOd"  class="form-control"/></label>
+        <label class="control-label">Do <input type="date" name="casDo" class="form-control"/></label>
         <h3>Način obiska</h3>
         <label class=".control-label">Vrsta obiska
-            <select type="search" name="vrsta" >
+            <select type="search" name="vrsta"  class="form-control">
                 <option value="vsi">Vsi</option>
                 <option value="preventivni obisk">Preventivni</option>
                 <option value="kurativni obisk">Kurativni</option>
             </select>
         </label>
         <label class=".control-label">Podvrsta obiska
-            <select type="search" name="podvrsta" >
+            <select type="search" name="podvrsta"  class="form-control">
                 <option value="vsi">Vsi</option>
                 <option value="obisk nosečnice">obisk nosečnice</option>
                 <option value="obisk otročičnice in novorojenčka">obisk otročičnice in novorojenčka</option>
@@ -27,22 +27,22 @@
         </label>
         {% if user.groups.all.0.name != "Zdravnik" %}
         <h3>Izdajatelj DN - zdravnik/vodja PS</h3>
-        <label class=".control-label">Ime<input type="search" name="imeI" /></label>
-        <label class=".control-label">Priimek<input type="search" name="priimekI" /></label>
+        <label class=".control-label">Ime<input type="search" name="imeI" class="form-control" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekI" class="form-control" /></label>
         {% endif %}
         <h3>Pacient</h3>
-        <label class=".control-label">Ime<input type="search" name="imeP" /></label>
-        <label class=".control-label">Priimek<input type="search" name="priimekP" /></label>
+        <label class=".control-label">Ime<input type="search" name="imeP" class="form-control" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekP"  class="form-control" /></label>
         {% if user.groups.all.0.name != "Medicinska sestra" %}
         <h3>Zadolžena patronažna sestra</h3>
-        <label class=".control-label">Ime<input type="search" name="imeZ" /></label>
-        <label class=".control-label">Priimek<input type="search" name="priimekZ" /></label>
+        <label class=".control-label">Ime<input type="search" name="imeZ" class="form-control" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekZ" class="form-control" /></label>
         <h3>Nadomestna patronažna sestra</h3>
-        <label class=".control-label">Ime<input type="search" name="imeN" /></label>
-        <label class=".control-label">Priimek<input type="search" name="priimekN" /></label>
+        <label class=".control-label">Ime<input type="search" name="imeN" class="form-control" /></label>
+        <label class=".control-label">Priimek<input type="search" name="priimekN" class="form-control" /></label>
         {% endif %}
         <br>
-        <label class="btn btn-default"><input type="submit" value="Išči" /></label>
+        <label><input class="form-control" type="submit" value="Išči" /></label>
     </form>
 
     <br>
