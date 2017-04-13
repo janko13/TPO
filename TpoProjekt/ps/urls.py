@@ -8,9 +8,9 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index', kwargs={'redirect_authenticated_user': True}),
     url(r'^registracija/$', views.RacunPacientFormView.as_view(), name='registracija'),
     url(r'^registracija/(?P<pk>[0-9]+)/$', views.PacientFormView.as_view(), name='registracija2'),
-    url(r'^registracija/(?P<pk>[0-9]+)/nov/$', views.PacientFormViewExtra.as_view(), name='registracija3'), #dodano na novo
-    url(r'^pregledPacientovRacun/$', views.PacientRacunList, name='pacientRacunList'), #dodano na novo
     url(r'^dodajanjeOsebja/$', views.RacunOsebjeFormView.as_view(), name='dodajOsebje'),
+    url(r'^registracija/(?P<pk>[0-9]+)/nov/$', views.PacientFormViewExtra.as_view(), name='registracija3'),
+    url(r'^pregledPacientovRacun/$', views.PacientRacunList, name='pacientRacunList'),  # dodano na novo
     url(r'^user/(?P<pk>[0-9]+)/$', views.UserFormView.as_view(), name='user'),
     url(r'^userO/(?P<pk>[0-9]+)/$', views.UserOFormView.as_view(), name='userO'),
     url(r'^prijavljen/$', views.PrijavljenView.as_view(), name='userO'),

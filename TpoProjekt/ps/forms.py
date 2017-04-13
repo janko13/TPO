@@ -138,6 +138,9 @@ class PacientFormExtra(forms.ModelForm):
 
 #KONEC DODAJANJA NOVEGA PACIENTA NA OBSTOJEČ RAČUN
 
+
+
+
 class RacunOsebjeForm(forms.ModelForm):
     GEN = (
         ('Zdravnik', 'Zdravnik'),
@@ -257,39 +260,122 @@ class GesloForm(forms.ModelForm):
 #delavni nalog forma
 class DelavniNalogForm(forms.ModelForm):
     nujnost = (
-        ('o', 'obvezn'),
-        ('n', 'okvirn'),
+        ('obvezen', 'obvezen'),
+        ('okviren', 'okviren'),
     )
 
     moznostiZaVrstoObiska = (
-        ('po', 'preventivni obisk'),
-        ('ko', 'kurativni obisk'),
+        ('preventivni obisk', 'preventivni obisk'),
+        ('kurativni obisk', 'kurativni obisk'),
     )
 
     moznostiZaPodVrstoObiska = (
-        ('on', 'obisk nosečnice'),
-        ('oo', 'obisk otročičnice in novorojenčka'),
-        ('ps', 'preventiva starostnika'),
-        ('ai', 'aplikacija inekcije'),
-        ('ok', 'odvzem krvi'),
-        ('ks', 'kontrola zdravstvenega stanja'),
+        ('obisk nosečnice', 'obisk nosečnice'),
+        ('obisk otročičnice in novorojenčka', 'obisk otročičnice in novorojenčka'),
+        ('preventiva starostnika', 'preventiva starostnika'),
+        ('aplikacija inekcije', 'aplikacija inekcije'),
+        ('odvzem krvi', 'odvzem krvi'),
+        ('kontrola zdravstvenega stanja', 'kontrola zdravstvenega stanja'),
     )
     #dobi od uporabnika
-    zdravnik = forms.ModelChoiceField(queryset=RacunOsebje.objects.all())
+    # zdravnik = forms.ModelChoiceField(queryset=RacunOsebje.objects.all())
     bolezn = forms.ModelChoiceField(label='Bolezen', queryset=SifrantBolezn.objects.all(), required=False)
-    datumPrvegaObiska = forms.DateField(label='Datum prvega obiska', widget=forms.DateInput(attrs={'type': 'date'}))
+    datumPrvegaObiska = forms.DateField(label='Datum prvega obiska')#, widget=forms.DateInput(attrs={'type': 'date'}))
     nujnostObiska = forms.ChoiceField(label='Nujnost obiska', choices=nujnost)
     steviloObiskov = forms.IntegerField(label='Število obiskov')
     vrstaObiska = forms.ChoiceField(label='Vrsta obiska', choices=moznostiZaVrstoObiska)
     podVrstaObiska = forms.ChoiceField(label='Pod vrsta obiska', choices=moznostiZaPodVrstoObiska)
     # previri da je izpoljen eden od obeh
-    casovniIntervalMedDvemaObiskoma = forms.CharField(label='Časovni interval med dvema obiskoma')
-    casovnoObdobje = forms.CharField(label='Časovno obdobje')
+    casovniIntervalMedDvemaObiskoma = forms.CharField(label='Časovni interval med dvema obiskoma', required=False)
+    casovnoObdobje = forms.CharField(label='Časovno obdobje', required=False)
+
     # dobi od uporabnika
-    izvajalecZdravstveneDejavnosti = forms.ModelChoiceField(queryset=IzvajalecZdravstveneDejavnosti.objects.all())
+    # izvajalecZdravstveneDejavnosti = forms.ModelChoiceField(queryset=IzvajalecZdravstveneDejavnosti.objects.all())
+
+    # def __init__(self, *args, **kwargs):
+    #     self.user = kwargs.pop('user', None)
+    #     self.field_order = ['geslo', 'password', 'geslo2']
+    #     super(GesloForm, self).__init__(*args, **kwargs)
+
+    def clean_steviloObiskov(self):
+        st = self.cleaned_data.get('steviloObiskov')
+        if st not in range(1, 9):
+            raise forms.ValidationError("Napacen vnos - število mora biti med 1 in 9.")
+
+        return st
+
+
+    def clean(self):
+        cleaned_data = super(DelavniNalogForm, self).clean()
+        casInt = self.cleaned_data.get('casovniIntervalMedDvemaObiskoma')
+        casO = self.cleaned_data.get('casovnoObdobje')
+        if casInt and casO:
+            raise forms.ValidationError("Izpolni le eno polje")
+
+        if not casInt and not casO:
+            raise forms.ValidationError("Izpolnite eno polje")
+
+        return cleaned_data
+
+
+    def clean_datumPrvegaObiska(self):
+        dat = self.cleaned_data.get('datumPrvegaObiska')
+        datum = timezone.now().date()
+        if dat < datum:
+            raise forms.ValidationError("Izberi datum v prihodnosti")
+
+        return dat
 
     class Meta:
         model = DelavniNalog
-        fields = ['zdravnik', 'bolezn', 'datumPrvegaObiska', 'nujnostObiska', 'steviloObiskov', 'vrstaObiska',
-                  'podVrstaObiska', 'casovniIntervalMedDvemaObiskoma', 'casovnoObdobje',
-                  'izvajalecZdravstveneDejavnosti']
+        fields = ['bolezn', 'datumPrvegaObiska', 'nujnostObiska', 'steviloObiskov', 'vrstaObiska',
+                  'podVrstaObiska', 'casovniIntervalMedDvemaObiskoma', 'casovnoObdobje' ]
+
+
+class PacientDelovniNalog(forms.ModelForm):
+    delavniNalog = forms.ModelChoiceField(queryset=DelavniNalog.objects.all())
+    pacient = forms.ModelChoiceField(queryset=Pacient.objects.all())
+
+    class Meta:
+        model = PacientDelovniNalog
+        fields = ['delavniNalog', 'pacient']
+
+
+class ZdravilaDelovniNalog(forms.ModelForm):
+    delavniNalog = forms.ModelChoiceField(queryset=DelavniNalog.objects.all())
+    zdravilo = forms.ModelChoiceField(queryset=SifrantZdravil.objects.all())
+    stevilo = forms.IntegerField()
+
+    class Meta:
+        model = ZdravilaDelovniNalog
+        fields = ['delavniNalog', 'zdravilo', 'stevilo']
+
+
+class MaterialDelovniNalog(forms.ModelForm):
+    delavniNalog = forms.ModelChoiceField(queryset=DelavniNalog.objects.all())
+    material = forms.ModelChoiceField(queryset=SifrantMateriala.objects.all())
+    stevilo = forms.IntegerField()
+
+    class Meta:
+        model = MaterialDelovniNalog
+        fields = ['delavniNalog', 'material', 'stevilo']
+
+
+class ObiskForm(forms.ModelForm):
+
+    opravljen = (
+        ('ne', 'ne'),
+        ('da', 'da'),
+    )
+    delavniNalog = forms.ModelChoiceField(queryset=DelavniNalog.objects.all())
+    predvidenDatumObiska = forms.DateField()  # spremenjeno iz datumObiska
+    dejanskiDatumObiska = forms.DateField()  # dodano
+    planiranDatumObiska = forms.DateField()
+    zaporednoSteviloObiska = forms.IntegerField()
+    obiskOpravljen = forms.ChoiceField(choices=opravljen)
+    zePlaniran = forms.ChoiceField(choices=opravljen)
+
+    class Meta:
+        model = Obisk
+        fields = ['delavniNalog', 'predvidenDatumObiska', 'dejanskiDatumObiska', 'planiranDatumObiska', 'zaporednoSteviloObiska',
+                  'obiskOpravljen', 'zePlaniran']

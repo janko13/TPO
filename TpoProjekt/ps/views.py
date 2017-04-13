@@ -16,7 +16,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.loader import render_to_string, get_template
 from django.template import Context
 from django.core.mail import EmailMessage
-from ipware.ip import get_ip
 from django.conf import settings
 from .middleware import *
 
@@ -28,6 +27,7 @@ from sendgrid.helpers.mail import *
 from .forms import *
 from .models import *
 
+global stevec
 stevec = 0
 PREPOVED = ['123.123.123.123',]
 
@@ -53,7 +53,7 @@ class IndexView(generic.TemplateView):
 class RacunPacientFormView(CreateView):
     model = RacunPacient
     form_class = RacunPacientForm
-   # success_url = '/ps/registracija2/'
+    # success_url = '/ps/registracija2/'
     def get_context_data(self, *args, **kwargs):
         context = super(RacunPacientFormView, self).get_context_data(*args, **kwargs)
         context['pacienti'] = RacunPacient.objects.filter()
@@ -75,7 +75,7 @@ class RacunPacientFormView(CreateView):
 class PacientFormView(CreateView):
     model = Pacient
     form_class = PacientForm
-   # success_url = '/ps/'
+    # success_url = '/ps/'
     #preverjanje validacije forme in nato shranjevanje v bazo
     def form_valid(self, form):
         #dobivanje ID za RacunPacient iz url naslova
@@ -93,6 +93,7 @@ class PacientFormView(CreateView):
         a = a[17:]
         return reverse('ps:user', args=(a,))
 
+
 # view za dodajanje pacienta v ze obstojec racun NOVO DODANO
 class PacientFormViewExtra(CreateView):
     model = Pacient
@@ -101,7 +102,7 @@ class PacientFormViewExtra(CreateView):
     # success_url = '/ps/'
     # preverjanje validacije forme in nato shranjevanje v bazo
     def form_valid(self, form):
-       # dobivanje ID za RacunPacient iz url naslova
+        # dobivanje ID za RacunPacient iz url naslova
         a = self.request.path
         a = a[:-5]
         a = a[17:]
@@ -117,6 +118,7 @@ class PacientFormViewExtra(CreateView):
         a = a[17:]
         return reverse('ps:user', args=(a,))
 
+
 def PacientRacunList(request):
     print(request.user)
     pacienti = Pacient.objects.filter(racun__email='poskus@mail.si')
@@ -125,6 +127,7 @@ def PacientRacunList(request):
     }
     return render(request, 'ps/pacientRacunList.html', context)
     # KONEC NOVO DODANO
+
 
 #view za template ob dodajanju osebja
 class RacunOsebjeFormView(CreateView):
@@ -357,7 +360,7 @@ def auth_view(request):
 
     inactive_user = User.objects.filter(email=username)
     if not inactive_user and username != 'admin':
-        return HttpResponseRedirect('/ps/invalid/')
+        return HttpResponseRedirect('/ps/')
 
     if (not inactive_user is not None) and (username != 'admin'):
         print('username: ' + username)
@@ -375,7 +378,17 @@ def auth_view(request):
         stevec = 0
         return HttpResponseRedirect('/ps/prijavljen/')
     else:
-        return HttpResponseRedirect('/ps/invalid/')
+        ip = get_client_ip(request)
+        global stevec
+        stevec = stevec + 1
+        print('ip c: ' + ip + ', stevec: ' + str(stevec))
+        if stevec >= 3:
+            blocked = settings.BLOCKED_IPS + [ip, ]
+            settings.BLOCKED_IPS = blocked
+            settings.BLOCKED_TIME = settings.BLOCKED_TIME + [datetime.datetime.now(), ]
+            # settings.configure(default_settings=False, BLOCKED_IPS=blocked)
+            stevec = 0
+        return HttpResponseRedirect('/ps/')
 
 #je prijavljen
 def loggedin(request):
@@ -386,7 +399,7 @@ def loggedin(request):
 def invalid_login(request):
     ip = get_client_ip(request)
     global stevec
-    stevec = stevec + 1
+    stevec += 1
     print('ip c: ' + ip + ', stevec: ' + str(stevec))
     if stevec >= 3:
         blocked = settings.BLOCKED_IPS + [ip,]
@@ -491,10 +504,26 @@ def aktivacijaLinka(request, pk):
 
 #tocka 5
 class DodajDelavniNalog(CreateView):
+# class FormMixin(ContextMixin):
+    # user = self.request.user
+    # print(user.groups.all())
     model = DelavniNalog
     form_class = DelavniNalogForm
-    success_url = '/ps/prijavlen/'
+    success_url = '/ps/prijavljen'
 
     def form_valid(self, form):
-        # form.instance.user = self.request.user
+        # v delavni nalog se avtomatsko shrani user in njegova ustanova
+        racun = RacunOsebje.objects.filter(email=self.request.user.username)
+        form.instance.zdravnik = racun[0]
+        form.instance.izvajalecZdravstveneDejavnosti = racun[0].izvajalecZdravstveneDejavnosti
+
         return super(DodajDelavniNalog, self).form_valid(form)
+
+
+def dodajDN(request):
+
+    if request.method == 'POST':
+        delavniNalog = DelavniNalogForm(request.POST)
+
+        if delavniNalog.is_valid():
+            dn = delavniNalog.save(commit=False)

@@ -152,12 +152,12 @@ class DelavniNalog(models.Model):
     zdravnik = models.ForeignKey(RacunOsebje)
     bolezn = models.ForeignKey(SifrantBolezn, null=True, blank=True)
     datumPrvegaObiska = models.DateField()
-    nujnostObiska = models.CharField(max_length=19, choices=nujnost)
+    nujnostObiska = models.CharField(max_length=50, choices=nujnost)
     steviloObiskov = models.IntegerField()
-    vrstaObiska = models.CharField(max_length=29, choices=moznostiZaVrstoObiska)
-    podVrstaObiska = models.CharField(max_length=29, choices=moznostiZaPodVrstoObiska)
-    casovniIntervalMedDvemaObiskoma = models.CharField(max_length=25, blank=True, null=True)
-    casovnoObdobje = models.CharField(max_length=25, blank=True, null=True)
+    vrstaObiska = models.CharField(max_length=50, choices=moznostiZaVrstoObiska)
+    podVrstaObiska = models.CharField(max_length=50, choices=moznostiZaPodVrstoObiska)
+    casovniIntervalMedDvemaObiskoma = models.CharField(max_length=50, blank=True, null=True)
+    casovnoObdobje = models.CharField(max_length=50, blank=True, null=True)
     izvajalecZdravstveneDejavnosti = models.ForeignKey(IzvajalecZdravstveneDejavnosti)
     datumVnosa = models.DateField(editable=False, default=timezone.now) #dodano
 
@@ -166,6 +166,9 @@ class DelavniNalog(models.Model):
         if not self.id:
             self.datumVnosa = timezone.now()
         return super(DelavniNalog, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.zdravnik.email
 
 
 class Obisk(models.Model):
@@ -186,10 +189,13 @@ class PacientDelovniNalog(models.Model):
     delavniNalog = models.ForeignKey(DelavniNalog)
     pacient = models.ForeignKey(Pacient)
 
+    def __str__(self):
+        return self.delavniNalog.zdravnik.ime
+
 
 class ZdravilaDelovniNalog (models.Model):
     delavniNalog = models.ForeignKey(DelavniNalog)
-    zdravial = models.ForeignKey(SifrantZdravil)
+    zdravilo = models.ForeignKey(SifrantZdravil)
     stevilo = models.IntegerField()
 
 
