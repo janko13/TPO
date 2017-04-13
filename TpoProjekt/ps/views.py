@@ -525,3 +525,30 @@ def dodajDN(request):
 
         if delavniNalog.is_valid():
             dn = delavniNalog.save(commit=False)
+
+def dodajDN(request):
+
+    context = {'form': DelavniNalogForm,
+               'pacientForm': PacientDelovniNalog,
+               'obiskForm': ObiskForm,
+               'zdravilaForm': ZdravilaDelovniNalog,
+               'materialForm': MaterialDelovniNalog}
+
+    if request.method == 'POST':
+        delavniNalog = DelavniNalogForm(request.POST)
+        pForm = PacientDelovniNalog(request.POST)
+        if delavniNalog.is_valid() and pForm.is_valid():
+            # shranimo delavni nalog
+            dn = delavniNalog.save(commit=False)
+            dn.zdravnik = RacunOsebje.objects.get(email=request.user.username)
+            dn.izvajalecZdravstveneDejavnosti = RacunOsebje.objects.get(email=request.user.username).izvajalecZdravstveneDejavnosti
+            dn.save()
+            # povezovalna tabela pacient - delavni nalog
+            pf = pForm.save(commit=False)
+            pf.delavniNalog = dn
+            pf.save()
+
+
+            return HttpResponseRedirect('/ps/prijavljen')
+
+    return render(request, 'ps/delavninalog_form.html', context)

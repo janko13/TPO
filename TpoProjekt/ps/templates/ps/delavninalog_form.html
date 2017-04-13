@@ -6,7 +6,16 @@
     <form method="POST" action="" enctype="multipart/form-data">
          {% csrf_token %}
         {{ form.as_p }}
+        <br>
+        <label for="{{ pacientForm.pacient.id_for_label }}">Pacient:</label>
+        {% for pacient in pacientForm.pacient %}
+            <div>{{ pacient }}</div>
+        {% endfor %}
         <label><input type="submit" value="Dodaj delavni nalog" /></label>
     </form>
+
+
+
+
 </div>
 {% endblock %}
