@@ -16,13 +16,20 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.loader import render_to_string, get_template
 from django.template import Context
 from django.core.mail import EmailMessage
+from ipware.ip import get_ip
+from django.conf import settings
+from .middleware import *
 
 import datetime
 import sendgrid
 from sendgrid.helpers.mail import *
 
+
 from .forms import *
 from .models import *
+
+stevec = 0
+PREPOVED = ['123.123.123.123',]
 
 #logika za izpis templata ob prijavi
 class PrijavljenView(LoginRequiredMixin, generic.TemplateView):   #LOGIN required OK
@@ -316,7 +323,10 @@ def auth_view(request):
     password = request.POST.get('password', '')
 
     inactive_user = User.objects.filter(email=username)
-    if (inactive_user is not None) and (username != 'admin'):
+    if not inactive_user and username != 'admin':
+        return HttpResponseRedirect('/ps/invalid/')
+
+    if (not inactive_user is not None) and (username != 'admin'):
         print('username: ' + username)
         if (inactive_user[0].is_active == False):
             print(inactive_user[0].email)
@@ -328,21 +338,43 @@ def auth_view(request):
 
     if user is not None:
         auth.login(request, user)
+        global stevec
+        stevec = 0
         return HttpResponseRedirect('/ps/prijavljen/')
     else:
         return HttpResponseRedirect('/ps/invalid/')
 
 #je prijavljen
 def loggedin(request):
+
     return render_to_response('ps/prijavljen.html',
                               {'full_name':request.user.username})
 #napačna prijava
 def invalid_login(request):
+    ip = get_client_ip(request)
+    global stevec
+    stevec = stevec + 1
+    print('ip c: ' + ip + ', stevec: ' + str(stevec))
+    if stevec >= 3:
+        blocked = settings.BLOCKED_IPS + [ip,]
+        settings.BLOCKED_IPS = blocked
+        settings.BLOCKED_TIME = settings.BLOCKED_TIME + [datetime.datetime.now(),]
+        #settings.configure(default_settings=False, BLOCKED_IPS=blocked)
+        stevec = 0
+
     return render_to_response('ps/invalid_login.html', RequestContext(request, {}))
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 #odjava
 def logout(request):
     auth.logout(request)
-    return render_to_response('ps/logout.html', RequestContext(request, {}))
+    return HttpResponseRedirect('/ps/')
 
 #prikaz obiskov
 #prikaz obiskov

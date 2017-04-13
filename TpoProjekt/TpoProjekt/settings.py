@@ -49,7 +49,10 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ps.middleware.blockIP.BlockedIpMiddleware',
 ]
+BLOCKED_IPS = []
+BLOCKED_TIME = []
 
 ROOT_URLCONF = 'TpoProjekt.urls'
 
