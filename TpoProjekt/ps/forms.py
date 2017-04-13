@@ -96,6 +96,48 @@ class PacientForm(forms.ModelForm):
         model = Pacient
         fields = ['ime', 'priimek', 'datumRojstva', 'spol', 'zavarovanjeID', 'naslov', 'okolisID', 'posta']
 
+#ZAČETEK DODAJANJA NOVEGA PACIENTA NA OBSTOJEČ RAČUN
+
+class PacientFormExtra(forms.ModelForm):
+    GEN = (
+        ('M', 'moški'),
+        ('Ž', 'ženska'),
+    )
+    SOR = (
+        ('Mama', 'mama'),
+        ('Oče', 'oče'),
+        ('Brat', 'brat'),
+        ('Sestra', 'sestra'),
+        ('Žena', 'žena'),
+        ('Mož', 'mož'),
+        ('Sin', 'sin'),
+        ('Hči', 'hči'),
+        ('Drugo', 'drugo'),
+    )
+    ime = forms.CharField(label='Ime')
+    priimek = forms.CharField(label='Priimek')
+    zavarovanjeID = forms.CharField(label='Številka zdravstvenega zavarovanja')
+    datumRojstva = forms.DateField(label='Datum rojstva', widget=forms.DateInput(attrs={'type': 'date'}))
+    spol = forms.ChoiceField(label='Spol', choices=GEN)
+    naslov = forms.CharField(label='Naslov')
+    posta = forms.ModelChoiceField(queryset=Posta.objects.all(), label='Pošta')
+    okolisID = forms.ModelChoiceField(queryset=Okolis.objects.all(), label='Okoliš')
+    sorodstvoRacun = forms.ChoiceField(label='Sorodstvo', choices=SOR)
+
+    def clean_zavarovanjeID(self):
+        pacienti = list(Pacient.objects.all().values('zavarovanjeID'))
+        zavarovanjeID = self.cleaned_data.get('zavarovanjeID')
+        for d in pacienti:
+            if zavarovanjeID == d['zavarovanjeID']:
+                raise forms.ValidationError("Uporabnik s tem zavarovanjem že obstaja")
+        return zavarovanjeID
+
+    class Meta:
+        model = Pacient
+        fields = ['ime', 'priimek', 'datumRojstva', 'spol', 'zavarovanjeID', 'naslov', 'okolisID', 'posta', 'sorodstvoRacun']
+
+#KONEC DODAJANJA NOVEGA PACIENTA NA OBSTOJEČ RAČUN
+
 class RacunOsebjeForm(forms.ModelForm):
     GEN = (
         ('Zdravnik', 'Zdravnik'),

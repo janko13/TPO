@@ -93,6 +93,39 @@ class PacientFormView(CreateView):
         a = a[17:]
         return reverse('ps:user', args=(a,))
 
+# view za dodajanje pacienta v ze obstojec racun NOVO DODANO
+class PacientFormViewExtra(CreateView):
+    model = Pacient
+    form_class = PacientFormExtra
+
+    # success_url = '/ps/'
+    # preverjanje validacije forme in nato shranjevanje v bazo
+    def form_valid(self, form):
+       # dobivanje ID za RacunPacient iz url naslova
+        a = self.request.path
+        a = a[:-5]
+        a = a[17:]
+        print(a)
+        # shranjevanje pravega RacunPacient na Pacient
+        form.instance.racun = RacunPacient.objects.get(pk=a)
+        return super(PacientFormViewExtra, self).form_valid(form)
+
+    # ob končanju gre na url pod "user", prenaša ID(a)
+    def get_success_url(self):
+        a = self.request.path
+        a = a[:-5]
+        a = a[17:]
+        return reverse('ps:user', args=(a,))
+
+def PacientRacunList(request):
+    print(request.user)
+    pacienti = Pacient.objects.filter(racun__email='poskus@mail.si')
+    context = {
+        'pacienti': pacienti,
+    }
+    return render(request, 'ps/pacientRacunList.html', context)
+    # KONEC NOVO DODANO
+
 #view za template ob dodajanju osebja
 class RacunOsebjeFormView(CreateView):
     model = RacunOsebje

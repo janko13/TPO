@@ -15,6 +15,9 @@
     {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Vodja PS" %}
     <a href="{% url 'ps:dodajDelavniNalog' %}">Ustvari delovni nalog</a>
     {% endif %}
+    {% if user.groups.all.0.name == "Pacient" %}
+    <a href="{% url 'ps:pacientRacunList' %}">Pacienti na računu</a>
+    {% endif %}
     <a href="{% url 'ps:odjava' %}">Odjava</a>
     {% block body %}
     {% endblock %}

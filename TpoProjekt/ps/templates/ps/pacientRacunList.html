@@ -1,0 +1,24 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div class="pacient-list">
+    <h1>Pacienti na računu</h1>
+    <table border="1">
+        <tr>
+            <th>Ime</th>
+            <th>Priimek</th>
+            <th>Datum rojstva</th>
+            <th>Številka ZD</th>
+            <th>Sorodstvo z računom</th>
+        </tr>
+        {% for pacient in pacienti %}
+        <tr>
+            <td>{{pacient.ime}}</td>
+            <td>{{pacient.priimek}}</td>
+            <td>{{ pacient.datumRojstva.day }}. {{ pacient.datumRojstva.month }}. {{ pacient.datumRojstva.year }}</td>
+            <td>{{pacient.zavarovanjeID}}</td>
+            <td>{{pacient.sorodstvoRacun}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
