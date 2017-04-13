@@ -12,7 +12,14 @@
         </form>
     </div>
     <a href="{% url 'ps:registracija' %}">Registracija</a>
-    {% block dodatek %}
-    {% endblock %}
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
 </div>
 {% endblock %}

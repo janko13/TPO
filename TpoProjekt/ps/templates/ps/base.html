@@ -12,6 +12,10 @@
     {% if user.groups.all.0.name == "Medicinska sestra" %}
     <a href="{% url 'ps:visit' %}">Planiranje obiskov</a>
     {% endif %}
+    {% if user.groups.all.0.name == "Pacient" %}
+    <a href="{% url 'ps:pacientRacunList' %}">Pregled oseb na uporabniškem računu</a>
+    <a href="{% url 'ps:dodajPacienta' %}">Dodaj osebo na uporabniški račun</a>
+    {% endif %}
     {% if user.groups.all.0.name == "Zdravnik" or user.groups.all.0.name == "Vodja PS" %}
     <a href="{% url 'ps:dodajDelavniNalog' %}">Ustvari delovni nalog</a>
     {% endif %}

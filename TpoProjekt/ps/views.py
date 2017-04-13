@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, render_to_response
@@ -98,30 +99,28 @@ class PacientFormView(CreateView):
 class PacientFormViewExtra(CreateView):
     model = Pacient
     form_class = PacientFormExtra
+    template_name = 'ps/pacient2_form.html'
 
     # success_url = '/ps/'
     # preverjanje validacije forme in nato shranjevanje v bazo
     def form_valid(self, form):
         # dobivanje ID za RacunPacient iz url naslova
-        a = self.request.path
-        a = a[:-5]
-        a = a[17:]
+        a = self.request.user
+        racun = RacunPacient.objects.get(email=a.username)
         print(a)
         # shranjevanje pravega RacunPacient na Pacient
-        form.instance.racun = RacunPacient.objects.get(pk=a)
+        form.instance.racun = racun
         return super(PacientFormViewExtra, self).form_valid(form)
 
     # ob končanju gre na url pod "user", prenaša ID(a)
     def get_success_url(self):
-        a = self.request.path
-        a = a[:-5]
-        a = a[17:]
-        return reverse('ps:user', args=(a,))
+        return reverse('ps:pacientRacunList')
 
 
 def PacientRacunList(request):
-    print(request.user)
-    pacienti = Pacient.objects.filter(racun__email='poskus@mail.si')
+    #print(request.user.username)
+    racun = RacunPacient.objects.get(email=request.user.username)
+    pacienti = Pacient.objects.filter(racun=racun)#
     context = {
         'pacienti': pacienti,
     }
@@ -360,6 +359,17 @@ def auth_view(request):
 
     inactive_user = User.objects.filter(email=username)
     if not inactive_user and username != 'admin':
+        messages.info(request, 'Prijava ni bila uspešna. Poskusite ponovno.')
+        ip = get_client_ip(request)
+        global stevec
+        stevec = stevec + 1
+        print('ip c: ' + ip + ', stevec: ' + str(stevec))
+        if stevec >= 3:
+            blocked = settings.BLOCKED_IPS + [ip, ]
+            settings.BLOCKED_IPS = blocked
+            settings.BLOCKED_TIME = settings.BLOCKED_TIME + [datetime.datetime.now(), ]
+            # settings.configure(default_settings=False, BLOCKED_IPS=blocked)
+            stevec = 0
         return HttpResponseRedirect('/ps/')
 
     if (not inactive_user is not None) and (username != 'admin'):
@@ -378,6 +388,7 @@ def auth_view(request):
         stevec = 0
         return HttpResponseRedirect('/ps/prijavljen/')
     else:
+        messages.info(request, 'Prijava ni bila uspešna. Poskusite ponovno.')
         ip = get_client_ip(request)
         global stevec
         stevec = stevec + 1
@@ -396,19 +407,6 @@ def loggedin(request):
     return render_to_response('ps/prijavljen.html',
                               {'full_name':request.user.username})
 #napačna prijava
-def invalid_login(request):
-    ip = get_client_ip(request)
-    global stevec
-    stevec += 1
-    print('ip c: ' + ip + ', stevec: ' + str(stevec))
-    if stevec >= 3:
-        blocked = settings.BLOCKED_IPS + [ip,]
-        settings.BLOCKED_IPS = blocked
-        settings.BLOCKED_TIME = settings.BLOCKED_TIME + [datetime.datetime.now(),]
-        #settings.configure(default_settings=False, BLOCKED_IPS=blocked)
-        stevec = 0
-
-    return render_to_response('ps/invalid_login.html', RequestContext(request, {}))
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
