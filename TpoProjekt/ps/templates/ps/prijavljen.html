@@ -3,5 +3,9 @@
 <div class="form-group container" style="width: 700px">
     <h1>Pozdravljen(a), {{ user.username }}</h1>
     <p>Dobrodošli v aplikaciji TPO Patronaža</p>
+    <br>
+    {% if user.groups.all.0.name != "Admin" %}
+    <p>Nazadnje ste se prijavili: {{ zadnja.day }}. {{ zadnja.month }}. {{ zadnja.year }}, {{ zadnja.hour }}:{{ zadnja.minute }}.  </p>
+    {% endif %}
 </div>
 {% endblock %}

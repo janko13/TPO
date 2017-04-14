@@ -40,6 +40,21 @@ class PrijavljenView(LoginRequiredMixin, generic.TemplateView):   #LOGIN require
         return super(PrijavljenView, self).dispatch(request, *args, **kwargs)
     template_name = 'ps/prijavljen.html'
 
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PrijavljenView, self).get_context_data(*args, **kwargs)
+        if self.request.user.username == 'admin':
+            pass
+        elif self.request.user.groups.all()[0].name == 'Pacient':
+            racun = RacunPacient.objects.get(email=self.request.user.username)
+            zadnja = racun.zadnjaPrijava
+            context['zadnja'] = zadnja
+        else:
+            racun = RacunOsebje.objects.get(email=self.request.user.username)
+            zadnja = racun.zadnjaPrijava
+            context['zadnja'] = zadnja
+        return context
+
 #začetni view
 class IndexView(generic.TemplateView):
     template_name = 'ps/index.html'
@@ -391,8 +406,12 @@ def auth_view(request):
             racun = RacunPacient.objects.get(email=user.username)
             racun.zadnjaPrijava = racun.trenutnaPrijava
             racun.trenutnaPrijava = datetime.datetime.now()
+            racun.save()
         else:
-            print('je osebje')
+            racun = RacunOsebje.objects.get(email=user.username)
+            racun.zadnjaPrijava = racun.trenutnaPrijava
+            racun.trenutnaPrijava = datetime.datetime.now()
+            racun.save()
 
         global stevec
         stevec = 0

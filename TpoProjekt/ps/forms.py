@@ -15,6 +15,7 @@ class RacunPacientForm(forms.ModelForm):
     telefon = forms.CharField(label='Telefon', widget=forms.TextInput(attrs={'class' : 'form-control'}))
     telefonKontaktna = forms.CharField(label='Telefon kontaktne*', required=False, widget=forms.TextInput(attrs={'class' : 'form-control'}))
 
+
     def clean(self):
         cleaned_data = super(RacunPacientForm, self).clean()
         telefonK = self.cleaned_data.get('telefonKontaktna')
@@ -84,6 +85,12 @@ class PacientForm(forms.ModelForm):
     posta = forms.ModelChoiceField(queryset=Posta.objects.all(), label='Pošta')
     okolisID = forms.ModelChoiceField(queryset=Okolis.objects.all(), label='Okoliš')
 
+    def clean_datumRojstva(self):
+        datumRojstva = self.cleaned_data.get('datumRojstva')
+        if datumRojstva > datetime.date.today():
+            raise forms.ValidationError("Datum rojstva ni veljaven")
+        return datumRojstva
+
     def clean_zavarovanjeID(self):
         pacienti = list(Pacient.objects.all().values('zavarovanjeID'))
         zavarovanjeID = self.cleaned_data.get('zavarovanjeID')
@@ -129,6 +136,13 @@ class PacientFormExtra(forms.ModelForm):
     posta = forms.ModelChoiceField(queryset=Posta.objects.all(), label='Pošta')
     okolisID = forms.ModelChoiceField(queryset=Okolis.objects.all(), label='Okoliš')
     sorodstvoRacun = forms.ChoiceField(label='Sorodstvo', choices=SOR)
+
+    def clean_datumRojstva(self):
+        datumRojstva = self.cleaned_data.get('datumRojstva')
+        if datumRojstva > datetime.date.today():
+            raise forms.ValidationError("Datum rojstva ni veljaven")
+        return datumRojstva
+
 
     def __init__(self, *args, **kwargs):
         super(PacientFormExtra, self).__init__(*args, **kwargs)
