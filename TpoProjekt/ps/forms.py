@@ -18,11 +18,13 @@ class RacunPacientForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(RacunPacientForm, self).clean()
+        #kontaktna:
         telefonK = self.cleaned_data.get('telefonKontaktna')
         imeK = self.cleaned_data.get('imeKontaktna')
         priimekK = self.cleaned_data.get('priimekKontaktna')
         naslovK = self.cleaned_data.get('naslovKontaktna')
         sorodstvoK = self.cleaned_data.get('sorodstvoKontaktna')
+
         if telefonK and imeK and priimekK and naslovK and sorodstvoK:
             print('JUHEJ')
             return cleaned_data
@@ -36,7 +38,6 @@ class RacunPacientForm(forms.ModelForm):
 
     def clean_geslo(self):
         geslo = self.cleaned_data.get('geslo')
-
         if len(geslo) < 8:
             raise forms.ValidationError("Geslo je prekratko")
         if any(i.isdigit() for i in geslo) == False:
@@ -71,6 +72,14 @@ class RacunPacientForm(forms.ModelForm):
         fields = ['email', 'geslo', 'geslo2', 'telefon', 'imeKontaktna', 'priimekKontaktna', 'naslovKontaktna',
                   'telefonKontaktna', 'sorodstvoKontaktna']
 
+
+    def __init__(self, *args, **kwargs):
+        super(RacunPacientForm, self).__init__(*args, **kwargs)
+        self.fields['geslo'].error_messages = {'required': 'To polje je obvezno'}
+        self.fields['geslo2'].error_messages = {'required': 'To polje je obvezno'}
+        self.fields['telefon'].error_messages = {'required': 'To polje je obvezno'}
+        self.fields['email'].error_messages = {'required': 'To polje je obvezno'}
+
 class PacientForm(forms.ModelForm):
     GEN = (
         ('M', 'moški'),
@@ -104,6 +113,9 @@ class PacientForm(forms.ModelForm):
         self.fields['spol'].widget.attrs.update({'class': 'form-control'})
         self.fields['posta'].widget.attrs.update({'class': 'form-control'})
         self.fields['okolisID'].widget.attrs.update({'class': 'form-control'})
+
+        for field in self.fields.values():
+            field.error_messages = {'required': 'To polje je obvezno'}
 
     class Meta:
         model = Pacient
@@ -151,6 +163,9 @@ class PacientFormExtra(forms.ModelForm):
         self.fields['okolisID'].widget.attrs.update({'class': 'form-control'})
         self.fields['sorodstvoRacun'].widget.attrs.update({'class': 'form-control'})
 
+        for field in self.fields.values():
+            field.error_messages = {'required': 'To polje je obvezno'}
+
     def clean_zavarovanjeID(self):
         pacienti = list(Pacient.objects.all().values('zavarovanjeID'))
         zavarovanjeID = self.cleaned_data.get('zavarovanjeID')
@@ -190,6 +205,9 @@ class RacunOsebjeForm(forms.ModelForm):
         super(RacunOsebjeForm, self).__init__(*args, **kwargs)
         self.fields['vloga'].widget.attrs.update({'class': 'form-control'})
         self.fields['izvajalecZdravstveneDejavnosti'].widget.attrs.update({'class': 'form-control'})
+
+        for field in self.fields.values():
+            field.error_messages = {'required': 'To polje je obvezno'}
 
     def clean_osebaID(self):
         osebje = list(RacunOsebje.objects.all().values('osebaID'))
@@ -283,6 +301,9 @@ class GesloForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.field_order = ['geslo', 'password', 'geslo2']
         super(GesloForm, self).__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            field.error_messages = {'required': 'To polje je obvezno'}
 
     class Meta:
         model = User

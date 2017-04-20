@@ -19,6 +19,7 @@ from django.template import Context
 from django.core.mail import EmailMessage
 from django.conf import settings
 from .middleware import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import datetime
 import sendgrid
@@ -311,7 +312,10 @@ class SeznamDNView(generic.ListView):
         elif oseba.vloga == 'Zdravnik':
             nalogi = DelavniNalog.objects.filter(zdravnik=oseba)
             context['pacientDN_list'] = seznam.filter(delavniNalog__in=nalogi)
-
+        else:
+            context['pacientDN_list'] = seznam.filter()
+        #paginator = Paginator(context['pacientDN_list'], 3)
+        print(context)
         return context
 
 #izpis DN
