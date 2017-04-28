@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^pregledPacientovRacun/$', views.PacientRacunList, name='pacientRacunList'),  # dodano na novo
     url(r'^user/(?P<pk>[0-9]+)/$', views.UserFormView.as_view(), name='user'),
     url(r'^userO/(?P<pk>[0-9]+)/$', views.UserOFormView.as_view(), name='userO'),
+    url(r'^okolis/(?P<pk>[0-9]+)/$', views.OkolisView.as_view(), name='okolis'),
     url(r'^prijavljen/$', views.PrijavljenView.as_view(), name='userO'),
     url(r'^seznamDN/$', views.IsciDNView.as_view(), name='seznamDN'),
     url(r'^seznamDN/res/$', views.SeznamDNView.as_view(), name='seznamDNres'),

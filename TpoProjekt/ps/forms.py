@@ -212,6 +212,8 @@ class RacunOsebjeForm(forms.ModelForm):
     def clean_osebaID(self):
         osebje = list(RacunOsebje.objects.all().values('osebaID'))
         osebaID = self.cleaned_data.get('osebaID')
+        if len(osebaID) > 5:
+            raise forms.ValidationError("ID osebe je 5-mestno število")
         for d in osebje:
             if osebaID == d['osebaID']:
                 raise forms.ValidationError("Uporabnik s tem ID-jem že obstaja")
@@ -251,6 +253,28 @@ class RacunOsebjeForm(forms.ModelForm):
     class Meta:
         model = RacunOsebje
         fields = [ 'ime', 'priimek', 'osebaID', 'email', 'geslo', 'geslo2', 'telefon', 'vloga', 'izvajalecZdravstveneDejavnosti',]
+
+class OkolisForm(forms.ModelForm):
+    imeOkolisa = forms.CharField(max_length=200, label='Ime okoliša', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+    sifraOkolisa = forms.CharField(max_length=200, label='Šifra okoliša', widget=forms.TextInput(attrs={'class' : 'form-control'}))
+
+    def clean_sifraOkolisa(self):
+        sifre = list(Okolis.objects.all().values('sifraOkolisa'))
+        sifraOkolisa = self.cleaned_data.get('sifraOkolisa')
+        for d in sifre:
+            if sifraOkolisa == d['sifraOkolisa']:
+                raise forms.ValidationError("Okoliš s to šifro že obstaja")
+        return sifraOkolisa
+
+    def __init__(self, *args, **kwargs):
+        super(OkolisForm, self).__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            field.error_messages = {'required': 'To polje je obvezno'}
+
+    class Meta:
+        model = Okolis
+        fields = ['imeOkolisa', 'sifraOkolisa']
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)

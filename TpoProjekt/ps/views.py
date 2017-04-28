@@ -157,7 +157,28 @@ class RacunOsebjeFormView(CreateView):
         return super(RacunOsebjeFormView, self).form_valid(form)
     #ob uspešnem dodajanju gre na url "userO", prenese se ID objekta
     def get_success_url(self):
-        return reverse('ps:userO', args=(self.object.id,))
+        vloga = RacunOsebje.objects.get(pk=self.object.id).vloga
+        if vloga == 'Medicinska sestra':
+            return reverse('ps:okolis', args=(self.object.id,))
+        else:
+            return reverse('ps:userO', args=(self.object.id,))
+
+class OkolisView (CreateView):
+    model = Okolis
+    form_class = OkolisForm
+
+    def form_valid(self, form):
+        a = self.request.path
+        a = a[:-1]
+        a = a[11:]
+        print(a)
+        form.instance.medicinskaSestra = RacunOsebje.objects.get(pk=a)
+        return super(OkolisView, self).form_valid(form)
+    def get_success_url(self):
+        a = self.request.path
+        a = a[:-1]
+        a = a[11:]
+        return reverse('ps:userO', args=(a,))
 
 #view za shranjevanje pacienta v Users
 class UserFormView(View):

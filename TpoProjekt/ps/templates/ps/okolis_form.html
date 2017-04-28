@@ -1,0 +1,12 @@
+{% extends 'ps/base.html' %}
+{% block body %}
+<div class="form-group container" style="width: 500px">
+    <h1>Kreiranje osebja</h1>
+    <p>Prosim, dodaj okoliš za medicinsko sestro</p>
+    <form method="POST" action="" enctype="multipart/form-data" class=".form-horizontal">
+         {% csrf_token %}
+        {{ form.as_p }}
+        <label><input class="form-control" type="submit" value="Dodaj okoliš" /></label>
+    </form>
+</div>
+{% endblock %}
